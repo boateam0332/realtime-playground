@@ -61,20 +61,20 @@ rtpg.list.INPUT_SELECTOR = '#demoListInput';
 rtpg.list.loadField = function() {
   rtpg.list.field = rtpg.getField(rtpg.list.FIELD_NAME);
   rtpg.list.cursors = rtpg.getField(rtpg.list.CURSORS_NAME);
-  if(rtpg.list.cursors){
-    rtpg.list.garbageCollectCursorMap();  
+  if (rtpg.list.cursors) {
+    rtpg.list.garbageCollectCursorMap();
   }
 };
 
-rtpg.list.garbageCollectCursorMap = function () {
+rtpg.list.garbageCollectCursorMap = function() {
   // Clean up the cursor map
   var keys = rtpg.list.cursors.keys();
-  for(var i = 0, len = keys.length; i < len; i++){
-    if(!rtpg.getCollaborator(keys[i])){
+  for (var i = 0, len = keys.length; i < len; i++) {
+    if (!rtpg.getCollaborator(keys[i])) {
       // Delete non existing collaborators
       rtpg.list.cursors.delete(keys[i]);
     } else {
-      // Create listeners for collaborators that already existed when the document opened
+      // Create listeners for collaborators that already existed
       rtpg.list.cursors.get(keys[i])
         .addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED, rtpg.list.onRealtimeReferenceShifted);
     }
@@ -94,7 +94,7 @@ rtpg.list.updateUi = function() {
   var array = rtpg.list.field.asArray();
 
   $(rtpg.list.INPUT_SELECTOR).empty();
-  for(var i = 0, len = array.length; i < len; i++){
+  for (var i = 0, len = array.length; i < len; i++) {
     var listItem = $('<li></li>').text(array[i]);
     listItem.on('click', rtpg.list.onListItemClick);
     $(rtpg.list.INPUT_SELECTOR).append(listItem);
@@ -102,17 +102,18 @@ rtpg.list.updateUi = function() {
   rtpg.list.updateListItems();
 };
 
-rtpg.list.onListItemClick = function (evt) {
+rtpg.list.onListItemClick = function(evt) {
   var index = $(evt.target).index(),
       me = rtpg.getMe();
 
   // Register Reference
-  if(!rtpg.list.field.registeredReference){
+  if (!rtpg.list.field.registeredReference) {
     rtpg.list.field.registeredReference = rtpg.list.field.registerReference(index, true);
     rtpg.list.field.registeredReference
       .addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED, rtpg.list.onRealtimeReferenceShifted);
-    if(rtpg.list.cursors){
-      rtpg.list.cursors.set(rtpg.getMe().sessionId, rtpg.list.field.registeredReference);
+    if (rtpg.list.cursors) {
+      rtpg.list.cursors.set(
+        rtpg.getMe().sessionId, rtpg.list.field.registeredReference);
     }
   }
 
@@ -123,23 +124,23 @@ rtpg.list.onListItemClick = function (evt) {
   $(rtpg.list.MOVE_SELECTOR).text('Move ' + $(evt.target).text() + ' to index');
 };
 
-rtpg.list.updateListItems = function () {
+rtpg.list.updateListItems = function() {
   var me = rtpg.getMe(),
       listItems = $(rtpg.list.INPUT_SELECTOR + ' li'),
       keys;
-  
+
   listItems.removeClass('muted').removeAttr('style');
 
-  if(rtpg.list.field.registeredReference) {
+  if (rtpg.list.field.registeredReference) {
     listItems.removeClass('active');
     $(listItems[rtpg.list.field.registeredReference.index])
       .addClass('active').css('background-color', me.color);
   }
 
-  if(rtpg.list.cursors){
+  if (rtpg.list.cursors) {
     keys = rtpg.list.cursors.keys();
-    for(var i = 0, len = keys.length; i < len; i++){
-      if(keys[i] != me.sessionId){
+    for (var i = 0, len = keys.length; i < len; i++) {
+      if (keys[i] != me.sessionId) {
         var index = rtpg.list.cursors.get(keys[i]).index;
         var collaborator = rtpg.getCollaborator(keys[i]);
         $(listItems[index]).addClass('muted');
@@ -173,11 +174,11 @@ rtpg.list.onAddItem = function() {
   }
 };
 
-rtpg.list.onMoveItem = function (evt) {
+rtpg.list.onMoveItem = function(evt) {
   var oldIndex = $(rtpg.list.INPUT_SELECTOR + ' .active').index(),
       newIndex = parseInt($(rtpg.list.MOVE_CONTENT_SELECTOR).val());
 
-  if(newIndex <= $(rtpg.list.INPUT_SELECTOR).children().length && newIndex >= 0){
+  if (newIndex <= $(rtpg.list.INPUT_SELECTOR).children().length && newIndex >= 0) {
     rtpg.list.field.move(oldIndex, newIndex);
     rtpg.list.updateUi();
   } else {
@@ -208,13 +209,14 @@ rtpg.list.connectUi = function() {
   $(rtpg.list.SET_SELECTOR).click(rtpg.list.onSetItem);
 };
 
-rtpg.list.onRealtimeReferenceShifted = function (evt) {
+rtpg.list.onRealtimeReferenceShifted = function(evt) {
   var log = rtpg.getCollaborator(evt.sessionId).displayName + ' moved cursor from ' + evt.oldIndex +' to ' + evt.newIndex;
+  
   rtpg.log.logEvent(evt, log);
   rtpg.list.updateUi();
 };
 
-rtpg.list.onRealtimeCursorChange = function (evt) {
+rtpg.list.onRealtimeCursorChange = function(evt) {
   console.log('Cursor Change Event');
   evt.newValue.addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED, rtpg.list.onRealtimeReferenceShifted);
   rtpg.list.updateUi();
@@ -234,7 +236,7 @@ rtpg.list.connectRealtime = function() {
   rtpg.list.field.addEventListener(gapi.drive.realtime.EventType.VALUES_REMOVED, rtpg.list.onRealtimeRemoved);
   rtpg.list.field.addEventListener(gapi.drive.realtime.EventType.VALUES_SET, rtpg.list.onRealtimeSet);
 
-  if(rtpg.list.cursors){
+  if (rtpg.list.cursors) {
     rtpg.list.cursors.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, rtpg.list.onRealtimeCursorChange);
   }
 };
