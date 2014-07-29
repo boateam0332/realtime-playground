@@ -27,6 +27,10 @@ rtpg.allDemos.push(rtpg.list);
  * Realtime model's field name for List Demo.
  */
 rtpg.list.FIELD_NAME = 'demo_list';
+
+/**
+ * Realtime model's field name for the Cursor Demo.
+ */
 rtpg.list.CURSORS_NAME = 'demo_cursors';
 
 /**
@@ -50,7 +54,15 @@ rtpg.list.REMOVE_SELECTOR = '#demoListRemove';
 rtpg.list.CLEAR_SELECTOR = '#demoListClear';
 rtpg.list.SET_SELECTOR = '#demoListSet';
 rtpg.list.SET_CONTENT_SELECTOR = '#demoListSetContent';
+
+/**
+ * DOM selector for the move button
+ */
 rtpg.list.MOVE_SELECTOR = '#demoListMove';
+
+/**
+ * DOM selector for the move text field
+ */
 rtpg.list.MOVE_CONTENT_SELECTOR = '#demoListMoveItem';
 
 /**
@@ -66,6 +78,10 @@ rtpg.list.loadField = function() {
   }
 };
 
+/**
+ * Method that will remove collaborators cursors who are not on the document
+ * any more, and check for cursors of collaborators who were already present.
+ */
 rtpg.list.garbageCollectCursorMap = function() {
   // Clean up the cursor map
   var keys = rtpg.list.cursors.keys();
@@ -76,7 +92,8 @@ rtpg.list.garbageCollectCursorMap = function() {
     } else {
       // Create listeners for collaborators that already existed
       rtpg.list.cursors.get(keys[i])
-        .addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED, rtpg.list.onRealtimeReferenceShifted);
+        .addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED, 
+          rtpg.list.onRealtimeReferenceShifted);
     }
   }
 };
@@ -102,28 +119,43 @@ rtpg.list.updateUi = function() {
   rtpg.list.updateListItems();
 };
 
+/**
+ * Method to hand list item clicks
+ */
 rtpg.list.onListItemClick = function(evt) {
   var index = $(evt.target).index(),
       me = rtpg.getMe();
 
   // Register Reference
   if (!rtpg.list.field.registeredReference) {
-    rtpg.list.field.registeredReference = rtpg.list.field.registerReference(index, true);
+    // The creation of the registered reference is marked as non undoable
+    rtpg.realtimeDoc.getModel().beginCompoundOperation('', false);
+    rtpg.list.field.registeredReference = rtpg.list.field.registerReference(
+      index, true);
     rtpg.list.field.registeredReference
-      .addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED, rtpg.list.onRealtimeReferenceShifted);
+      .addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED,
+        rtpg.list.onRealtimeReferenceShifted);
     if (rtpg.list.cursors) {
       rtpg.list.cursors.set(
         rtpg.getMe().sessionId, rtpg.list.field.registeredReference);
     }
+    rtpg.realtimeDoc.getModel().endCompoundOperation();
   }
 
-  rtpg.list.field.registeredReference.index = index;
+  // Any new index changes are inside a non undoable compound operation, and will not
+  // be able to be undone.
+  rtpg.realtimeDoc.getModel().beginCompoundOperation('', false);
+    rtpg.list.field.registeredReference.index = index;
+  rtpg.realtimeDoc.getModel().endCompoundOperation();
 
   // Set text for move button and set field
   $(rtpg.list.SET_CONTENT_SELECTOR).val($(evt.target).text());
   $(rtpg.list.MOVE_SELECTOR).text('Move ' + $(evt.target).text() + ' to index');
 };
 
+/**
+ * Method to keep list items in sync with data model
+ */
 rtpg.list.updateListItems = function() {
   var me = rtpg.getMe(),
       listItems = $(rtpg.list.INPUT_SELECTOR + ' li'),
@@ -174,11 +206,15 @@ rtpg.list.onAddItem = function() {
   }
 };
 
+/**
+ * Method for handling move item event
+ */
 rtpg.list.onMoveItem = function(evt) {
   var oldIndex = $(rtpg.list.INPUT_SELECTOR + ' .active').index(),
       newIndex = parseInt($(rtpg.list.MOVE_CONTENT_SELECTOR).val());
 
-  if (newIndex <= $(rtpg.list.INPUT_SELECTOR).children().length && newIndex >= 0) {
+  if (newIndex <= $(rtpg.list.INPUT_SELECTOR).children().length &&
+          newIndex >= 0) {
     rtpg.list.field.move(oldIndex, newIndex);
     rtpg.list.updateUi();
   } else {
@@ -209,18 +245,29 @@ rtpg.list.connectUi = function() {
   $(rtpg.list.SET_SELECTOR).click(rtpg.list.onSetItem);
 };
 
+/**
+ * Method to handle realtime reference shifted events
+ */
 rtpg.list.onRealtimeReferenceShifted = function(evt) {
-  var log = rtpg.getCollaborator(evt.sessionId).displayName + ' moved cursor from ' + evt.oldIndex + ' to ' + evt.newIndex;
+  var log = rtpg.getCollaborator(evt.sessionId).displayName +
+      ' moved cursor from ' + evt.oldIndex + ' to ' + evt.newIndex;
   rtpg.log.logEvent(evt, log);
   rtpg.list.updateUi();
 };
 
+/**
+ * Method to handle realtime cursor changes
+ */
 rtpg.list.onRealtimeCursorChange = function(evt) {
   console.log('Cursor Change Event');
-  evt.newValue.addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED, rtpg.list.onRealtimeReferenceShifted);
+  evt.newValue.addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED,
+    rtpg.list.onRealtimeReferenceShifted);
   rtpg.list.updateUi();
 };
 
+/**
+ * Sets up listeners on elements
+ */
 rtpg.list.connectUi = function() {
   $(rtpg.list.INPUT_SELECTOR + ' li').on('click', rtpg.list.onSelect);
   $(rtpg.list.ADD_SELECTOR).on('click', rtpg.list.onAddItem);
@@ -231,11 +278,16 @@ rtpg.list.connectUi = function() {
 };
 
 rtpg.list.connectRealtime = function() {
-  rtpg.list.field.addEventListener(gapi.drive.realtime.EventType.VALUES_ADDED, rtpg.list.onRealtimeAdded);
-  rtpg.list.field.addEventListener(gapi.drive.realtime.EventType.VALUES_REMOVED, rtpg.list.onRealtimeRemoved);
-  rtpg.list.field.addEventListener(gapi.drive.realtime.EventType.VALUES_SET, rtpg.list.onRealtimeSet);
+  rtpg.list.field.addEventListener(
+    gapi.drive.realtime.EventType.VALUES_ADDED, rtpg.list.onRealtimeAdded);
+  rtpg.list.field.addEventListener(
+    gapi.drive.realtime.EventType.VALUES_REMOVED, rtpg.list.onRealtimeRemoved);
+  rtpg.list.field.addEventListener(
+    gapi.drive.realtime.EventType.VALUES_SET, rtpg.list.onRealtimeSet);
 
   if (rtpg.list.cursors) {
-    rtpg.list.cursors.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, rtpg.list.onRealtimeCursorChange);
+    rtpg.list.cursors.addEventListener(
+      gapi.drive.realtime.EventType.VALUE_CHANGED,
+      rtpg.list.onRealtimeCursorChange);
   }
 };
