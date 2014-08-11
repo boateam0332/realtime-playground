@@ -73,8 +73,8 @@ rtpg.list.INPUT_SELECTOR = '#demoListInput';
 rtpg.list.loadField = function() {
   rtpg.list.field = rtpg.getField(rtpg.list.FIELD_NAME);
   rtpg.list.cursors = rtpg.getField(rtpg.list.CURSORS_NAME);
-  if (rtpg.list.cursors) {
-    rtpg.list.garbageCollectCursorMap();
+  if(rtpg.list.cursors){
+    rtpg.list.garbageCollectCursorMap();  
   }
 };
 
@@ -85,12 +85,12 @@ rtpg.list.loadField = function() {
 rtpg.list.garbageCollectCursorMap = function() {
   // Clean up the cursor map
   var keys = rtpg.list.cursors.keys();
-  for (var i = 0, len = keys.length; i < len; i++) {
-    if (!rtpg.getCollaborator(keys[i])) {
+  for(var i = 0, len = keys.length; i < len; i++){
+    if(!rtpg.getCollaborator(keys[i])){
       // Delete non existing collaborators
       rtpg.list.cursors.delete(keys[i]);
     } else {
-      // Create listeners for collaborators that already existed
+      // Create listeners for collaborators that already existed when the document opened
       rtpg.list.cursors.get(keys[i])
         .addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED, 
           rtpg.list.onRealtimeReferenceShifted);
@@ -111,7 +111,7 @@ rtpg.list.updateUi = function() {
   var array = rtpg.list.field.asArray();
 
   $(rtpg.list.INPUT_SELECTOR).empty();
-  for (var i = 0, len = array.length; i < len; i++) {
+  for(var i = 0, len = array.length; i < len; i++){
     var listItem = $('<li></li>').text(array[i]);
     listItem.on('click', rtpg.list.onListItemClick);
     $(rtpg.list.INPUT_SELECTOR).append(listItem);
@@ -126,10 +126,10 @@ rtpg.list.onListItemClick = function(evt) {
   var index = $(evt.target).index(),
       me = rtpg.getMe();
 
+  rtpg.realtimeDoc.getModel().beginCompoundOperation('', false);
   // Register Reference
   if (!rtpg.list.field.registeredReference) {
     // The creation of the registered reference is marked as non undoable
-    rtpg.realtimeDoc.getModel().beginCompoundOperation('', false);
     rtpg.list.field.registeredReference = rtpg.list.field.registerReference(
       index, true);
     rtpg.list.field.registeredReference
@@ -139,13 +139,11 @@ rtpg.list.onListItemClick = function(evt) {
       rtpg.list.cursors.set(
         rtpg.getMe().sessionId, rtpg.list.field.registeredReference);
     }
-    rtpg.realtimeDoc.getModel().endCompoundOperation();
   }
 
   // Any new index changes are inside a non undoable compound operation, and will not
   // be able to be undone.
-  rtpg.realtimeDoc.getModel().beginCompoundOperation('', false);
-    rtpg.list.field.registeredReference.index = index;
+  rtpg.list.field.registeredReference.index = index;
   rtpg.realtimeDoc.getModel().endCompoundOperation();
 
   // Set text for move button and set field
@@ -160,19 +158,19 @@ rtpg.list.updateListItems = function() {
   var me = rtpg.getMe(),
       listItems = $(rtpg.list.INPUT_SELECTOR + ' li'),
       keys;
-
+  
   listItems.removeClass('muted').removeAttr('style');
 
-  if (rtpg.list.field.registeredReference) {
+  if(rtpg.list.field.registeredReference) {
     listItems.removeClass('active');
     $(listItems[rtpg.list.field.registeredReference.index])
       .addClass('active').css('background-color', me.color);
   }
 
-  if (rtpg.list.cursors) {
+  if(rtpg.list.cursors){
     keys = rtpg.list.cursors.keys();
-    for (var i = 0, len = keys.length; i < len; i++) {
-      if (keys[i] != me.sessionId) {
+    for(var i = 0, len = keys.length; i < len; i++){
+      if(keys[i] != me.sessionId){
         var index = rtpg.list.cursors.get(keys[i]).index;
         var collaborator = rtpg.getCollaborator(keys[i]);
         $(listItems[index]).addClass('muted');
@@ -255,13 +253,16 @@ rtpg.list.onRealtimeReferenceShifted = function(evt) {
   rtpg.list.updateUi();
 };
 
+
 /**
  * Method to handle realtime cursor changes
  */
 rtpg.list.onRealtimeCursorChange = function(evt) {
   console.log('Cursor Change Event');
-  evt.newValue.addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED,
-    rtpg.list.onRealtimeReferenceShifted);
+  if(evt.newValue){
+    evt.newValue.addEventListener(gapi.drive.realtime.EventType.REFERENCE_SHIFTED,
+      rtpg.list.onRealtimeReferenceShifted);
+  }
   rtpg.list.updateUi();
 };
 
