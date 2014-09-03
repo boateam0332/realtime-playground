@@ -27,6 +27,11 @@ handlers:
   upload: templates/index.html
   secure: always
 
+- url: /sandbox
+  static_files: templates/sandboxIndex.html
+  upload: templates/index.html
+  secure: always  
+
 - url: /sandbar
   static_files: templates/fake_devsite_sandbar.html
   upload: templates/fake_devsite_sandbar.html
