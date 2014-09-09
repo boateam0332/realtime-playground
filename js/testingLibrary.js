@@ -1,18 +1,24 @@
-var FunctionalTesting = function () {}
+FunctionalTesting = function () {
+	this.$el = $(this.container);
+	this.$results = $(this.results);
+	this.$el.append(this.$results);
 
-functionalTesting.prototype = {
+}
 
-	container: = '<div class="container"></div>',
+FunctionalTesting.prototype = {
 
-	results: = '<div class="results"></div>',
+	container: '<div class="test-library-container"></div>',
+
+	results: '<div class="results"></div>',
 
 	passedClassName: 'passed',
 
 	failedClassName: 'failed',
 
-	testingClasses = [],
+	testingClasses: [],
 
 	load: function (testingClass) {
+		this.$results.append(testingClass.$el);
 		this.testingClasses.push(testingClass);
 	},
 

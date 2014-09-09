@@ -1,14 +1,22 @@
 
-var collaborativeStringTest = new TestingClass('Collaborative String Tests');
+$(function(){
+	window.testSuite = new FunctionalTesting();
 
-collaborativeStringTest
-	.test('Receive changes from another browser', function () {
-		return true;
-	})
-	.test('Changes here are reflected in another browser', function () {
-		return true;
-	})
+	$('body').append(testSuite.$el);
 
-window.functionalTesting.load(collaborativeStringTest);
+	testSuite.$el.addClass('active');
 
-window.functionalTesting.execute();
+	var collaborativeStringTest = new TestingClass('Collaborative String Tests');
+
+	collaborativeStringTest
+		.test('Receive changes from another browser', function () {
+			return true;
+		})
+		.test('Changes here are reflected in another browser', function () {
+			return true;
+		})
+
+	testSuite.load(collaborativeStringTest);
+});
+
+

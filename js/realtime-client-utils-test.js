@@ -430,6 +430,7 @@ rtclient.RealtimeLoader.prototype.createNewFileAndRedirect = function() {
 function createiFrame() {
   $('body').append($('<iframe id="testing-frame"></iframe>').attr('src', window.location.href.replace('test', '')));
   console.log('created a new iframe');
+
 }
 
 

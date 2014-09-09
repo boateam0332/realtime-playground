@@ -1,10 +1,10 @@
 var TestingClass = function (description) {
-	this.$el = this.el({
+	this.$el = $(this.el({
 		description: description
-	});
+	}));
 }
 
-testingClass.prototype = {
+TestingClass.prototype = {
 
 	timeout: 1000,
 
@@ -14,25 +14,29 @@ testingClass.prototype = {
 
 	tests: [],
 
-	el: _.template('<div class="test-class"><h1>{{ description }}</h1><div class="tests"></div></div>'),
+	el: _.template('<div class="test-class"><h1><%= description %></h1><div class="tests"></div></div>'),
 
-	testEl: _.template('<div class="test">{{ description }}<span class="{{ result }}">{{ result }}</span></div>'),
+	testEl: _.template('<div class="test"><%= description %><span class="result"><%= result %></span></div>'),
 
 	test: function (description, fn) {
 
-		var el = this.testEl({
+		var el = $(this.testEl({
 			description: description,
 			result: 'pending'
-		});
+		}));
 
 		var test = {
 			fn: function () {
 				return fn();
 			},
-			selector: el
+			$el: el
 		}
 
+		this.tests.push(test);
+
 		this.$el.find('.tests').append(el);
+
+		return this;
 
 	},
 
@@ -57,10 +61,7 @@ testingClass.prototype = {
 					break;
 				}
 			}
-			var el = $(this.testEl({
-				description: this.tests[i].description,
-				result: success ? 'passed' : 'failed'
-			}));
+			this.tests[i].$el.find('.result').removeClass('pending').addClass(success ? 'passed' : 'failed').text(success ? 'passed' : 'failed');
 
 			if(success){
 				lib.testSuccess();
