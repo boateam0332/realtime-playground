@@ -22,9 +22,9 @@ handlers:
   static_dir: js
   secure: always
 
-- url: /test
-  static_files: templates/testIndex.html
-  upload: templates/testIndex.html
+- url: /
+  static_files: templates/index.html
+  upload: templates/index.html
   secure: always
 
 - url: /sandbox
@@ -32,9 +32,9 @@ handlers:
   upload: templates/sandboxIndex.html
   secure: always
 
-- url: /
-  static_files: templates/index.html
-  upload: templates/index.html
+- url: /test
+  static_files: templates/testIndex.html
+  upload: templates/testIndex.html
   secure: always
 
 - url: /sandbar
