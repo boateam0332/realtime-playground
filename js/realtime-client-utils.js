@@ -306,12 +306,15 @@ rtclient.RealtimeLoader.prototype.redirectTo = function(fileIds, userId) {
   }
 
   // Naive URL construction.
+  var path = window.location.pathname;
+  path = path[path.length - 1] == '/' ? path : path + '/';
   var newUrl = params.length == 0 ? './' : ('./#' + params.join('&'));
+
   // Using HTML URL re-write if available.
   if (window.history && window.history.replaceState) {
     window.history.replaceState("Google Drive Realtime API Playground", "Google Drive Realtime API Playground", newUrl);
   } else {
-    window.location.href = newUrl;
+    window.location.href =  + newUrl;
   }
   // We are still here that means the page didn't reload.
   rtclient.params = rtclient.getParams();

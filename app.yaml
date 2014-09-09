@@ -29,7 +29,7 @@ handlers:
 
 - url: /sandbox
   static_files: templates/sandboxIndex.html
-  upload: templates/index.html
+  upload: templates/sandboxIndex.html
   secure: always  
 
 - url: /test

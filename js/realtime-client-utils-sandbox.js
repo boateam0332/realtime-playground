@@ -310,8 +310,12 @@ rtclient.RealtimeLoader.prototype.redirectTo = function(fileIds, userId) {
     params.push('userId=' + userId);
   }
 
-  // Naive URL construction.
-  var newUrl = params.length == 0 ? './' : ('./#' + params.join('&'));
+    // Naive URL construction.
+    var path = window.location.pathname;
+    path = path[path.length - 1] == '/' ? path : path + '/';
+    var newUrl = params.length == 0 ? '' : ('#' + params.join('&'));
+    newUrl = path + newUrl;
+
   // Using HTML URL re-write if available.
   if (window.history && window.history.replaceState) {
     window.history.replaceState("Google Drive Realtime API Playground", "Google Drive Realtime API Playground", newUrl);
