@@ -1,0 +1,38 @@
+
+.test-class {
+	width: 80%;
+	left: 10%;
+	position: absolute;
+	z-index: 9999;
+	padding: 20px;
+	color: white;
+	background-color: black;
+	opacity: .8;
+	border-radius: 5px;
+}
+
+.test-class h1 {
+	font-size: 32px;
+	padding: 20px;
+	color: white;
+}
+
+.test {
+	padding: 20px;
+}
+
+.test-class .test .result {
+	float: right;
+}
+
+.test-class .test .result.pending {
+	color: yellow;
+}
+
+.test-class .test .result.passed {
+	color: green;
+}
+
+.test-class .test .result.failed {	
+	color: red;
+}

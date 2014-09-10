@@ -59,6 +59,9 @@ rtpg.collaborators.connectRealtime = function(doc) {
 rtpg.collaborators.onCollaboratorJoined = function(event) {
   rtpg.log.logEvent(event, 'User opened the document');
   rtpg.collaborators.updateUi();
+  if(rtpg.realtimeDoc.getCollaborators().length >= 2 && window.testSuite){
+    window.testSuite.execute();
+  }
 };
 
 rtpg.collaborators.onCollaboratorLeft = function(event) {

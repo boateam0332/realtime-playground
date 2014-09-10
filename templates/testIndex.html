@@ -1,34 +1,38 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description"
+      content="The Google Drive Realtime API Playground allows you to experiment with the Google Drive Realtime API." />
+    <meta name="keywords"
+      content="OAuth, Google, realtime, POST, GET, PUT, token, client id, Javascript, operational, transforms" />
+    <title>Google Drive Realtime API Playground2</title>
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=9">
-  <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-  <meta name="description"
-    content="The Google Drive Realtime API Playground allows you to experiment with the Google Drive Realtime API." />
-  <meta name="keywords"
-    content="OAuth, Google, realtime, POST, GET, PUT, token, client id, Javascript, operational, transforms" />
-  <title>Google Drive Realtime API Playground</title>
+    <link rel="stylesheet" href="//developers.google.com/_static/css/screen.css" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="css/main.css" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="css/testingStyles.css" />
 
-  <link rel="stylesheet" href="//developers.google.com/_static/css/screen.css" type="text/css" media="screen" charset="utf-8">
-  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css" />
-  <link rel="stylesheet" href="css/main.css" type="text/css" media="screen" charset="utf-8">
+    <script type="text/javascript" src="//www.google.com/jsapi"></script>
+    <script type="text/javascript" src="//apis.google.com/js/api.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/realtime-client-utils-test.js"></script>
+    <script type="text/javascript" src="js/rtpg.js"></script>
+    <script type="text/javascript" src="js/rtpg.log.js"></script>
+    <script type="text/javascript" src="js/rtpg.string.js"></script>
+    <script type="text/javascript" src="js/rtpg.list.js"></script>
+    <script type="text/javascript" src="js/rtpg.map.js"></script>
+    <script type="text/javascript" src="js/rtpg.custom.js"></script>
+    <script type="text/javascript" src="js/rtpg.collaborators.js"></script>
+    <script type="text/javascript" src="js/rtpg.ui.js"></script>
 
-  <script type="text/javascript" src="//www.google.com/jsapi"></script>
-  <script type="text/javascript" src="//apis.google.com/js/api.js"></script>
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-  <script type="text/javascript" src="js/realtime-client-utils-sandbox.js"></script>
-  <script type="text/javascript" src="js/rtpg.js"></script>
-  <script type="text/javascript" src="js/rtpg.log.js"></script>
-  <script type="text/javascript" src="js/rtpg.string.js"></script>
-  <script type="text/javascript" src="js/rtpg.list.js"></script>
-  <script type="text/javascript" src="js/rtpg.map.js"></script>
-  <script type="text/javascript" src="js/rtpg.custom.js"></script>
-  <script type="text/javascript" src="js/rtpg.collaborators.js"></script>
-  <script type="text/javascript" src="js/rtpg.ui.js"></script>
-</head>
+    <script type="text/javascript" src="js/underscore.js"></script>
+    <script type="text/javascript" src="js/testingLibrary.js"></script>
+    <script type="text/javascript" src="js/testingClass.js"></script>
+    <script type="text/javascript" src="/tests/collaborativeStringTest.js"></script>
+  </head>
   <body>
     <div id="message"></div>
     <header id="rp-googlebar">

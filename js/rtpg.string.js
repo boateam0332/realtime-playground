@@ -59,6 +59,7 @@ rtpg.string.updateUi = function() {
 };
 
 rtpg.string.onInput = function(evt) {
+  console.log('keyup input received');
   var newValue = $(rtpg.string.INPUT_SELECTOR).val();
   rtpg.string.field.setText(newValue);
 };
@@ -74,9 +75,9 @@ rtpg.string.onRealtimeDelete = function(evt) {
 };
 
 rtpg.string.connectUi = function() {
-  $(rtpg.string.INPUT_SELECTOR).keyup(rtpg.string.onInput);
-  $(rtpg.string.INPUT_SELECTOR).click(rtpg.string.updateReference);
-  $(rtpg.string.INPUT_SELECTOR).keyup(rtpg.string.updateReference);
+  $(rtpg.string.INPUT_SELECTOR).on('keyup', rtpg.string.onInput);
+  $(rtpg.string.INPUT_SELECTOR).on('click', rtpg.string.updateReference);
+  $(rtpg.string.INPUT_SELECTOR).on('keyup', rtpg.string.updateReference);
 };
 
 rtpg.string.connectRealtime = function() {

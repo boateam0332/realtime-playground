@@ -22,6 +22,10 @@ handlers:
   static_dir: js
   secure: always
 
+- url: /tests
+  static_dir: tests
+  secure: always
+
 - url: /test
   static_files: templates/testIndex.html
   upload: templates/testIndex.html
