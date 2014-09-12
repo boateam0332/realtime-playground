@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <title>Google Drive Realtime quickstart</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=9">
+
+  <!-- Load Styles -->
+  <link href="css/testingStyles.css" rel="stylesheet" />
+  <link rel="stylesheet" href="http://jmblog.github.io/color-themes-for-highlightjs/css/themes/tomorrow-night-eighties.css">
+  <link href='http://fonts.googleapis.com/css?family=Roboto:300,400' rel='stylesheet' type='text/css'>
+
+  <!-- Load the Realtime libraries. -->
+  <script type="text/javascript"
+          src="https://apis.google.com/js/api.js"></script>
+
+  <script type="text/javascript"
+          src="tests/testDocument.js"></script>
+
+  <!-- Load the utility library. -->
+  <script type="text/javascript"
+          src="vendor/realtime-client-utils.js"></script>
+
+  <!-- Libraries -->
+  <script type="text/javascript" src="vendor/jquery.js"></script>
+  <script type="text/javascript" src="vendor/underscore.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.2/highlight.min.js"></script>
+  <script type="text/javascript" src="vendor/testingClass.js"></script>
+  <script type="text/javascript" src="vendor/testingLibrary.js"></script>
+
+</head>
+
+<!-- Start Realtime when the body has loaded. -->
+<body onLoad='startRealtime()'>
+
+  <script>
+    window.testSuite = new FunctionalTesting('Google Drive Realtime API Test Suite');
+    $('body').append(testSuite.$el);
+
+    /**
+     * This function is called the first time that the Realtime model is created
+     * for a file. This function should be used to initialize any values of the
+     * model. In this case, we just create the single string model that will be
+     * used to control our text box. The string has a starting value of 'Hello
+     * Realtime World!', and is named 'text'.
+     * @param model {gapi.drive.realtime.Model} the Realtime root model object.
+     */
+    function initializeModel(model) {
+      window.testDocument1 = new TestDocument(model, 'alpha');
+    }
+
+    /**
+     * This function is called when the Realtime file has been loaded. It should
+     * be used to initialize any user interface components and event handlers
+     * depending on the Realtime model. In this case, create a text control binder
+     * and bind it to our string model that we created in initializeModel.
+     * @param doc {gapi.drive.realtime.Document} the Realtime document.
+     */
+    function onFileLoaded(doc) {
+      gapi.drive.realtime.load(window.fileId, onSecondFileLoaded, initSecondModel, handleErrors);
+    }
+
+    function handleErrors () {}
+
+    function initSecondModel(model) {}
+
+    function onSecondFileLoaded(doc) {
+      window.testDocument2 = new TestDocument(doc.getModel(), 'beta');
+      testSuite.execute();
+    }
+
+    /**
+     * Options for the Realtime loader.
+     */
+    var realtimeOptions = {
+      /**
+       * Client ID from the console.
+       */
+      clientId: '840867953062.apps.googleusercontent.com',
+
+      /**
+       * The ID of the button to click to authorize. Must be a DOM element ID.
+       */
+      authButtonElementId: 'authorizeButton',
+
+      /**
+       * Function to be called when a Realtime model is first created.
+       */
+      initializeModel: initializeModel,
+
+      /**
+       * Autocreate files right after auth automatically.
+       */
+      autoCreate: true,
+
+      /**
+       * The name of newly created Drive files.
+       */
+      defaultTitle: "New Realtime Quickstart File",
+
+      /**
+       * The MIME type of newly created Drive Files. By default the application
+       * specific MIME type will be used:
+       *     application/vnd.google-apps.drive-sdk.
+       */
+      newFileMimeType: null, // Using default.
+
+      /**
+       * Function to be called every time a Realtime file is loaded.
+       */
+      onFileLoaded: onFileLoaded,
+
+      /**
+       * Function to be called to inityalize custom Collaborative Objects types.
+       */
+      registerTypes: null, // No action.
+
+      /**
+       * Function to be called after authorization and before loading files.
+       */
+      afterAuth: null // No action.
+    }
+
+    /**
+     * Start the Realtime loader with the options.
+     */
+    function startRealtime() {
+      var realtimeLoader = new rtclient.RealtimeLoader(realtimeOptions);
+      realtimeLoader.start();
+    }
+
+  </script>
+
+  <!-- Test Files -->
+  <script type="text/javascript" src="tests/collaborativeStringTest.js"></script>
+  <script type="text/javascript" src="tests/collaborativeListTest.js"></script>
+  <script type="text/javascript" src="tests/collaborativeCustomObjectTest.js"></script>
+  <script type="text/javascript" src="tests/collaboratorTests.js"></script>
+  <script type="text/javascript" src="tests/eventTests.js"></script>
+  <script type="text/javascript" src="tests/multiMutationTest.js"></script>
+  <script type="text/javascript" src="tests/undoManagerTest.js"></script>
+</body>
+</html>

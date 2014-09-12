@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2013 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,6 @@ rtclient.REALTIME_MIMETYPE = 'application/vnd.google-apps.drive-sdk';
 rtclient.getParams = function() {
   var params = {};
   var hashFragment = window.location.hash;
-  var state = window.location.search;
   if (hashFragment) {
     // split up the query string and store in an object
     var paramStrs = hashFragment.slice(1).split("&");
@@ -72,11 +71,7 @@ rtclient.getParams = function() {
       var paramStr = paramStrs[i].split("=");
       params[paramStr[0]] = unescape(paramStr[1]);
     }
-  } else if (state) {
-    // For a state (sent from Drive UI)
-    params.state = state;
   }
-
   console.log(params);
   return params;
 }
@@ -100,7 +95,7 @@ rtclient.getOption = function(options, key, defaultValue) {
   if (value == undefined) {
     console.error(key + ' should be present in the options.');
   }
-  // console.log(value);
+  console.log(value);
   return value;
 }
 
@@ -110,7 +105,7 @@ rtclient.getOption = function(options, key, defaultValue) {
  * @constructor
  * @param options {Object} for authorizer. Two keys are required as mandatory, these are:
  *
- *    1. "clientId", the Client ID from the APIs Console
+ *    1. "clientId", the Client ID from the console
  */
 rtclient.Authorizer = function(options) {
   this.clientId = rtclient.getOption(options, 'clientId');
@@ -126,15 +121,8 @@ rtclient.Authorizer = function(options) {
  */
 rtclient.Authorizer.prototype.start = function(onAuthComplete) {
   var _this = this;
-  gapi.load('auth:client,drive-realtime,drive-share', {
-    config: {
-      'drive-realtime': {
-        'server': 'https://drive.sandbox.google.com/otservice'
-      }
-    },
-    callback: function() {
-      _this.authorize(onAuthComplete);
-    }
+  gapi.load('auth:client,drive-realtime,drive-share', function() {
+    _this.authorize(onAuthComplete);
   });
 }
 
@@ -150,11 +138,9 @@ rtclient.Authorizer.prototype.authorize = function(onAuthComplete) {
 
   var handleAuthResult = function(authResult) {
     if (authResult && !authResult.error) {
-      _this.authButton.disabled = true;
       _this.fetchUserId(onAuthComplete);
     } else {
-      _this.authButton.disabled = false;
-      _this.authButton.onclick = authorizeWithPopup;
+      alert('You are not authorized, please authorize and return');
     }
   };
 
@@ -252,19 +238,7 @@ rtclient.parseState = function(stateParam) {
     var stateObj = JSON.parse(stateParam);
     return stateObj;
   } catch(e) {
-    try {
-      // Replace the coded characters with their originals
-      var state = stateParam
-        .replace(/%22/g,'"')
-        .replace(/%7B/g,'{')
-        .replace(/%7D/g,'}')
-        .replace(/%5B/g,'[')
-        .replace(/%5D/g,']');
-      // Grab and parse the parameters from the query
-      return JSON.parse(/{.+}/.exec(state)[0]);
-    } catch (err) {
-      return null;
-    }
+    return null;
   }
 }
 
@@ -275,9 +249,9 @@ rtclient.parseState = function(stateParam) {
  * @constructor
  * @param options {Object} options for loader. Four keys are required as mandatory, these are:
  *
- *    1. "clientId", the Client ID from the APIs Console
- *    2. "initializeModel", the callback to call when the file is loaded.
- *    3. "onFileLoaded", the callback to call when the model is first created.
+ *    1. "clientId", the Client ID from the console
+ *    2. "initializeModel", the callback to call when the model is first created.
+ *    3. "onFileLoaded", the callback to call when the file is loaded.
  *
  * and one key is optional:
  *
@@ -298,7 +272,7 @@ rtclient.RealtimeLoader = function(options) {
 
 /**
  * Redirects the browser back to the current page with an appropriate file ID.
- * @param fileIds {Array.<string>} the IDs of the files to open.
+ * @param fileIds {Array.} the IDs of the files to open.
  * @param userId {string} the ID of the user.
  */
 rtclient.RealtimeLoader.prototype.redirectTo = function(fileIds, userId) {
@@ -318,13 +292,10 @@ rtclient.RealtimeLoader.prototype.redirectTo = function(fileIds, userId) {
   } else {
     window.location.href = newUrl;
   }
-
-  createiFrame();
-
   // We are still here that means the page didn't reload.
   rtclient.params = rtclient.getParams();
-  for (var id in fileIds) {
-    gapi.drive.realtime.load(fileIds[id], this.onFileLoaded, this.initializeModel, this.handleErrors);
+  for (var index in fileIds) {
+    gapi.drive.realtime.load(fileIds[index], this.onFileLoaded, this.initializeModel, this.handleErrors);
   }
 }
 
@@ -352,7 +323,7 @@ rtclient.RealtimeLoader.prototype.start = function() {
  */
 rtclient.RealtimeLoader.prototype.handleErrors = function(e) {
   if(e.type == gapi.drive.realtime.ErrorType.TOKEN_REFRESH_REQUIRED) {
-    rtpg.realtimeLoader.authorizer.authorize();
+    authorizer.authorize();
   } else if(e.type == gapi.drive.realtime.ErrorType.CLIENT_ERROR) {
     alert("An Error happened: " + e.message);
     window.location.href= "/";
@@ -368,42 +339,7 @@ rtclient.RealtimeLoader.prototype.handleErrors = function(e) {
  * parameters.
  */
 rtclient.RealtimeLoader.prototype.load = function() {
-  var fileIds = rtclient.params['fileIds'];
-  if (fileIds) {
-    fileIds = fileIds.split(',');
-  }
-  var userId = this.authorizer.userId;
-  var state = rtclient.params['state'];
-
-  // Creating the error callback.
-  var authorizer = this.authorizer;
-
-
-  // We have file IDs in the query parameters, so we will use them to load a file.
-  if (fileIds) {
-    for (var index in fileIds) {
-      gapi.drive.realtime.load(fileIds[index], this.onFileLoaded, this.initializeModel, this.handleErrors);
-    }
-    createiFrame();
-    return;
-  }
-
-  // We have a state parameter being redirected from the Drive UI. We will parse
-  // it and redirect to the fileId contained.
-  else if (state) {
-    var stateObj = rtclient.parseState(state);
-    // If opening a file from Drive.
-    if (stateObj.action == "open") {
-      fileIds = stateObj.ids;
-      userId = stateObj.userId;
-      this.redirectTo(fileIds, userId);
-      return;
-    }
-  }
-
-  if (this.autoCreate) {
-    this.createNewFileAndRedirect();
-  }
+  this.createNewFileAndRedirect();
 }
 
 
@@ -413,10 +349,11 @@ rtclient.RealtimeLoader.prototype.load = function() {
 rtclient.RealtimeLoader.prototype.createNewFileAndRedirect = function() {
   // No fileId or state have been passed. We create a new Realtime file and
   // redirect to it.
-  var _this = this;
+  var that = this;
   rtclient.createRealtimeFile(this.defaultTitle, this.newFileMimeType, function(file) {
     if (file.id) {
-      _this.redirectTo([file.id], _this.authorizer.userId);
+      window.fileId = file.id;
+      gapi.drive.realtime.load(file.id, that.onFileLoaded, that.initializeModel, that.handleErrors);
     }
     // File failed to be created, log why and do not attempt to redirect.
     else {
@@ -425,12 +362,3 @@ rtclient.RealtimeLoader.prototype.createNewFileAndRedirect = function() {
     }
   });
 }
-
-
-function createiFrame() {
-  window.childWindow = $('<iframe id="testing-frame"></iframe>').attr('src', window.location.href.replace('test', ''));
-  $('body').append(window.childWindow);
-  window.childWindow = window.childWindow[0].contentWindow;
-  console.log('created a new iframe');
-}
-

@@ -1,28 +1,73 @@
 
-.test-class {
+.testing-container {
+	font-family: 'Roboto', sans-serif;
+	font-weight: lighter;
 	width: 80%;
 	left: 10%;
 	position: absolute;
 	z-index: 9999;
 	padding: 20px;
 	color: white;
-	background-color: black;
-	opacity: .8;
+	background-image: url('../images/transpBlack75.png');
 	border-radius: 5px;
 }
 
-.test-class h1 {
-	font-size: 32px;
+.testing-container .results {
 	padding: 20px;
+}
+
+.testing-container h1, .testing-container h2 {
+	padding: 20px;
+	margin: 0;
 	color: white;
 }
 
-.test {
+.testing-container h1 {
+	font-size: 32px;
+	font-weight: normal;
+	padding-bottom: 0;
+}
+
+.testing-container h2 {
+	font-size: 24px;
+}
+
+#testing-frame {
+	width: 100%;
+	height: 1000px;
+}
+
+.test-class {
+	margin-top: 20px;
+}
+
+.test-class .tests {
 	padding: 20px;
 }
 
-.test-class .test .result {
-	float: right;
+.test-class .test {
+	position: relative;
+	padding: 5px 0px;
+}
+
+.test-class .test .code {
+	display: none;
+	padding: 10px;
+}
+
+.test-class .test .description {
+	font-size: 16px;
+}
+
+.test-class .test .description:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.test-class .test .test-result {
+	position: absolute;
+	top: 5px;
+	right: 5px;
 }
 
 .test-class .test .result.pending {
@@ -33,6 +78,51 @@
 	color: green;
 }
 
-.test-class .test .result.failed {	
+.test-class .test .result.failed {
 	color: red;
+}
+
+.test-class .stats {
+
+}
+
+.results span {
+	margin: 0px 20px;
+}
+
+progress {
+	position: absolute;
+	right: 63px;
+	top: 50px;
+	opacity: 0;
+	width: 300px;
+	height: 30px;
+	border-radius: 5px;
+}
+
+progress[value] {
+  /* Reset the default appearance */
+  -webkit-appearance: none;
+   appearance: none;
+
+  width: 300px;
+  height: 30px;
+  opacity: 1;
+  transition: all 1s;
+}
+
+progress[value]::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+  -webkit-animation: animate-stripes 5s linear infinite;
+	animation: animate-stripes 5s linear infinite;
+}
+
+@-webkit-keyframes animate-stripes {
+   100% { background-position: -100px 0px; }
+}
+
+@keyframes animate-stripes {
+   100% { background-position: -100px 0px; }
 }

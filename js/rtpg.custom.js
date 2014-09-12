@@ -134,6 +134,6 @@ rtpg.custom.connectUi = function() {
 
 rtpg.custom.connectRealtime = function() {
   if(rtpg.custom.field){
-    rtpg.custom.field.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, rtpg.custom.onRealtimeChange);  
+    rtpg.custom.field.addEventListener(gapi.drive.realtime.EventType.VALUE_CHANGED, rtpg.custom.onRealtimeChange);
   }
 };
