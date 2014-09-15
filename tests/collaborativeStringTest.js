@@ -1,14 +1,14 @@
 
 window.testSuite.load(new TestingClass('Collaborative String')
 	.setSynchronousTesting()
-	.setup({
+	.reset({
 		run: function () {
-			testDocument1.string.setText('');
+			testDocument1.string.setText('hello world');
 		},
 		assert: function () {
 			// Do not start any tests until this passes
-			return testDocument1.string.getText() == '' &&
-				testDocument2.string.getText() == '';
+			return testDocument1.string.getText() == 'hello world' &&
+				testDocument2.string.getText() == 'hello world';
 		}
 	})
 	.test({
@@ -17,20 +17,20 @@ window.testSuite.load(new TestingClass('Collaborative String')
 
 		},
 		assert: function () {
-			return testDocument1.string.toString() == '' &&
-				testDocument2.string.toString() == '';
+			return testDocument1.string.toString() == 'hello world' &&
+				testDocument2.string.toString() == 'hello world';
 		}
 	})
 	.test({
 		description: 'getText()',
 		run: function () {},
 		assert: function () {
-			return testDocument1.string.getText() == '' &&
-				testDocument2.string.getText() == '';
+			return testDocument1.string.getText() == 'hello world' &&
+				testDocument2.string.getText() == 'hello world';
 		}
 	})
 	.test({
-		description: 'setText() - local',
+		description: 'setText()',
 		run: function () {
 			testDocument1.string.setText('dog');
 		},
@@ -40,73 +40,34 @@ window.testSuite.load(new TestingClass('Collaborative String')
 		}
 	})
 	.test({
-		description: 'setText() - remote',
-		run: function () {
-			testDocument2.string.setText('cat');
-		},
-		assert: function () {
-			return testDocument2.string.getText() == 'cat' &&
-				testDocument1.string.getText() == 'cat';
-		}
-	})
-	.test({
-		description: 'append() - local',
+		description: 'append()',
 		run: function () {
 			testDocument1.string.append('-append');
 		},
 		assert: function () {
-			return testDocument1.string.getText() == 'cat-append' &&
-				testDocument2.string.getText() == 'cat-append';
+			return testDocument1.string.getText() == 'hello world-append' &&
+				testDocument2.string.getText() == 'hello world-append';
 		}
 	})
 	.test({
-		description: 'append() - remote',
+		description: 'insertString()',
 		run: function () {
-			testDocument2.string.append('-append');
+			testDocument1
+			testDocument1.string.insertString(1, '-test-')
 		},
 		assert: function () {
-			return testDocument1.string.getText() == 'cat-append-append' &&
-				testDocument2.string.getText() == 'cat-append-append';
+			return testDocument1.string.getText() == 'h-test-ello world' &&
+				testDocument2.string.getText() == 'h-test-ello world';
 		}
 	})
 	.test({
-		description: 'insertString() - local',
+		description: 'removeRange()',
 		run: function () {
-			testDocument1.string.insertString(0, 'test-')
+			testDocument1.string.removeRange(1,5);
 		},
 		assert: function () {
-			return testDocument1.string.getText() == 'test-cat-append-append' &&
-				testDocument2.string.getText() == 'test-cat-append-append';
-		}
-	})
-	.test({
-		description: 'insertString() - remote',
-		run: function () {
-			testDocument2.string.insertString(5, 'test-')
-		},
-		assert: function () {
-			return testDocument1.string.getText() == 'test-test-cat-append-append' &&
-				testDocument2.string.getText() == 'test-test-cat-append-append';
-		}
-	})
-	.test({
-		description: 'removeRange() - local',
-		run: function () {
-			testDocument1.string.removeRange(0,5);
-		},
-		assert: function () {
-			return testDocument1.string.getText() == 'test-cat-append-append' &&
-				testDocument2.string.getText() == 'test-cat-append-append';
-		}
-	})
-	.test({
-		description: 'removeRange() - remote',
-		run: function () {
-			testDocument1.string.removeRange(8, 22);
-		},
-		assert: function () {
-			return testDocument1.string.getText() == 'test-cat' &&
-				testDocument2.string.getText() == 'test-cat';
+			return testDocument1.string.getText() == 'h world' &&
+				testDocument2.string.getText() == 'h world';
 		}
 	})
 	.test({

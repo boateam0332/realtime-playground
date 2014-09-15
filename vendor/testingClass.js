@@ -118,6 +118,23 @@ TestingClass.prototype = {
 		this.testIndex++;
 		var test = this.tests[this.testIndex];
 		var success = false;
+
+		if(test.precondition){
+			// We need to wait for this condition to exist before proceeding...
+			test.precondition.description = "Precondition for " + test.description;
+			this.runNonNormalTest(test.precondition, function (success) {
+				if(!success){
+					throw test.description + ' failed; cannot continue';
+				} else {
+					console.log("Test precondition met")
+					test.precondition = false; // Completed the precondition
+					that.testIndex--;
+					that.continueExecution();
+				}
+			});
+			return;
+		}
+
 		test.start = new Date().getTime();
 		test.run.call(this);
 		var callback = function (success) {
@@ -144,6 +161,7 @@ TestingClass.prototype = {
 	},
 
 	attemptAssert: function (test, attempt, callback) {
+		var that = this;
 		if(!test.assert){
 			if(test.isSetup || test.isTeardown){
 				callback();
