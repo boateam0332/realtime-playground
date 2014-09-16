@@ -1,49 +1,72 @@
-
-.testing-container {
+body {
 	font-family: 'Roboto', sans-serif;
 	font-weight: lighter;
-	width: 80%;
-	left: 10%;
-	position: absolute;
-	z-index: 9999;
+}
+
+code {
+	font-size: 11px;
+}
+
+code span {
+	margin: 0 !important;
+}
+
+.progress-bubbles {
+	width: 150px;
+	height: 150px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.testing-container {
+	position: relative;
+	width: 950px;
+	margin: 0 auto;
 	padding: 20px;
-	color: white;
-	background-color: black;
 	border-radius: 5px;
 	transition: all 1s;
 }
 
+.testing-container .header {
+	position: fixed;
+	background-color: white;
+	width: 980px;
+	height: 150px;
+	z-index: 9999;
+	top: 0;
+	padding: 15px;
+}
+
+.testing-container .header h1 {
+	display: inline-block;
+	vertical-align: top;
+	line-height: 100px;
+	margin: 0 165px 0 0;
+}
+
 .testing-container.success {
-	background-color: #1B4D3E;
 	transition: all 1s;
 }
 
-.testing-container.success .test-class .test .result.passed {
-	color: lightgreen;
-	transition: all 1s;
-}
-
-.testing-container.failed {
-	background-color: #521011;
+.testing-container.failed h1 {
+	color: red;
 	transition: all 1s;
 }
 
 .testing-container.failed .test-class .test .result.failed {
-	color: #fe7276;
-}
-
-.testing-container.failed .test-class .test .result.passed {
-	color: lightgreen;
+	color: darkred;
 }
 
 .testing-container .results {
 	padding: 20px;
+	margin-top: 150px;
 }
 
 .testing-container h1, .testing-container h2 {
+	font-weight: lighter;
 	padding: 20px;
 	margin: 0;
-	color: white;
+	color: #222;
 }
 
 .testing-container h1 {
@@ -95,7 +118,7 @@
 }
 
 .test-class .test .result.pending {
-	color: yellow;
+	color: #A89E16;
 	transition: all 1s;
 }
 
@@ -115,41 +138,4 @@
 
 .results span {
 	margin: 0px 20px;
-}
-
-progress {
-	position: absolute;
-	right: 63px;
-	top: 50px;
-	opacity: 0;
-	width: 300px;
-	height: 30px;
-	border-radius: 5px;
-}
-
-progress[value] {
-  /* Reset the default appearance */
-  -webkit-appearance: none;
-   appearance: none;
-
-  width: 300px;
-  height: 30px;
-  opacity: 1;
-  transition: all 1s;
-}
-
-progress[value]::-webkit-progress-bar {
-  background-color: #eee;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
-  -webkit-animation: animate-stripes 5s linear infinite;
-	animation: animate-stripes 5s linear infinite;
-}
-
-@-webkit-keyframes animate-stripes {
-   100% { background-position: -100px 0px; }
-}
-
-@keyframes animate-stripes {
-   100% { background-position: -100px 0px; }
 }

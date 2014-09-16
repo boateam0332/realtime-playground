@@ -12,7 +12,7 @@ TestingClass = function (description) {
 
 TestingClass.prototype = {
 
-	timeout: 50,
+	timeout: 100,
 
 	retryAttempts: 100,
 

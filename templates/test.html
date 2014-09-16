@@ -26,6 +26,8 @@
   <script type="text/javascript" src="vendor/hljs.js"></script>
   <script type="text/javascript" src="vendor/testingClass.js"></script>
   <script type="text/javascript" src="vendor/testingLibrary.js"></script>
+  <script type="text/javascript" src="vendor/d3.js"></script>
+  <script type="text/javascript" src="tests/progress.js"></script>
 
 </head>
 
@@ -45,7 +47,7 @@
      * @param model {gapi.drive.realtime.Model} the Realtime root model object.
      */
     function initializeModel(model) {
-
+      window.testDocument1 = new TestDocument(model, 'alpha');
     }
 
     /**
@@ -56,10 +58,8 @@
      * @param doc {gapi.drive.realtime.Document} the Realtime document.
      */
     function onFileLoaded(doc) {
-      window.testDocument1 = new TestDocument(doc, 'alpha');
-      window.setTimeout(function() {
-        gapi.drive.realtime.load(window.fileId, onSecondFileLoaded, initSecondModel, handleErrors);
-      }, 5000);
+      testDocument1.doc = doc;
+      gapi.drive.realtime.load(window.fileId, onSecondFileLoaded, initSecondModel, handleErrors);
     }
 
     function handleErrors () {}
@@ -67,7 +67,8 @@
     function initSecondModel(model) {}
 
     function onSecondFileLoaded(doc) {
-      window.testDocument2 = new TestDocument(doc, 'beta');
+      window.testDocument2 = new TestDocument(doc.getModel(), 'beta');
+      testDocument2.doc = doc;
       testSuite.execute();
     }
 
@@ -137,13 +138,16 @@
   <script type="text/javascript" src="tests/collaborativeListTests.js"></script>
   <script type="text/javascript" src="tests/collaborativeMapTests.js"></script>
   <script type="text/javascript" src="tests/collaborativeStringTests.js"></script>
-  <script type="text/javascript" src="tests/documentTests.js"></script>
+  <script type="text/javascript" src="tests/collaboratorObjectTests.js"></script>
+<!--   <script type="text/javascript" src="tests/documentTests.js"></script>
+ -->  <script type="text/javascript" src="tests/documentSaveStateChangedEventTests.js"></script>
+  <script type="text/javascript" src="tests/errorTests.js"></script>
   <script type="text/javascript" src="tests/indexReferenceTests.js"></script>
   <script type="text/javascript" src="tests/modelTests.js"></script>
   <script type="text/javascript" src="tests/realtimeTests.js"></script>
-  <script type="text/javascript" src="tests/collaboratorObjectTests.js"></script>
   <script type="text/javascript" src="tests/referenceShiftedEventTests.js"></script>
   <script type="text/javascript" src="tests/textDeletedEventTests.js"></script>
+  <script type="text/javascript" src="tests/undoRedoStateChangedEventTests.js"></script>
   <script type="text/javascript" src="tests/textInsertedEventTests.js"></script>
   <script type="text/javascript" src="tests/valueChangedEventTests.js"></script>
   <script type="text/javascript" src="tests/valuesAddedEventTests.js"></script>
