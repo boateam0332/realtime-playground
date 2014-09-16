@@ -143,13 +143,12 @@ TestingClass.prototype = {
 				throw "Pretest failed, cannot continue";
 				return;
 			}
-			that.tallyTest(success);
 			$(test.selector.find('.result'))
 				.text(endTime - test.start + 'ms - ' + (success ? 'passed' : 'failed'))
 				.removeClass('pending')
 				.addClass(success ? 'passed' : 'failed');
-
 			that.lib.testCompleted(success);
+			that.tallyTest(success);
 		}
 		that.attemptAssert(test, 0, callback);
 	},

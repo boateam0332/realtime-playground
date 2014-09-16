@@ -8,8 +8,32 @@
 	z-index: 9999;
 	padding: 20px;
 	color: white;
-	background-image: url('../images/transpBlack75.png');
+	background-color: black;
 	border-radius: 5px;
+	transition: all 1s;
+}
+
+.testing-container.success {
+	background-color: #1B4D3E;
+	transition: all 1s;
+}
+
+.testing-container.success .test-class .test .result.passed {
+	color: lightgreen;
+	transition: all 1s;
+}
+
+.testing-container.failed {
+	background-color: #521011;
+	transition: all 1s;
+}
+
+.testing-container.failed .test-class .test .result.failed {
+	color: #fe7276;
+}
+
+.testing-container.failed .test-class .test .result.passed {
+	color: lightgreen;
 }
 
 .testing-container .results {
@@ -72,14 +96,17 @@
 
 .test-class .test .result.pending {
 	color: yellow;
+	transition: all 1s;
 }
 
 .test-class .test .result.passed {
 	color: green;
+	transition: all 1s;
 }
 
 .test-class .test .result.failed {
 	color: red;
+	transition: all 1s;
 }
 
 .test-class .stats {

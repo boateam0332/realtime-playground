@@ -75,6 +75,11 @@ FunctionalTesting.prototype = {
 		this.$completed.text('Total Tests: ' + this.testsCompleted + '/' + this.totalTests);
 		this.$failed.text('Failed: ' + this.failedTests);
 		this.$succeeded.text('Succeeded: ' + this.successfulTests);
+		if (this.failedTests) {
+			this.$el.addClass('failed');
+		} else if (this.totalTests == this.successfulTests){
+			this.$el.addClass('success');
+		}
 	}
 
 }

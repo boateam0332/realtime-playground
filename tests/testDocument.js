@@ -1,8 +1,9 @@
 
-var TestDocument = function (model, tag) {
+var TestDocument = function (doc, tag) {
+  this.doc = doc;
   this.tag = tag;
-  this.model = model;
-  this.root = model.getRoot();
+  this.model = doc.getModel();
+  this.root = this.model.getRoot();
   this.events = [];
   this.setup();
 }
