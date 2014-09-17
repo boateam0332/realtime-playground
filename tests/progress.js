@@ -28,6 +28,9 @@ ProgressBubbles.prototype = {
         .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")");
 
     this.pie = d3.layout.pie()
+      .sort(function(a, b) {
+        return a.order > b.order;
+      })
       .value(function(d) {
         return d.tests;
       });
@@ -72,6 +75,12 @@ ProgressBubbles.prototype = {
         .style('opacity', 0);
   },
 
+  updateTestCount: function (testCount) {
+    this.testCount = testCount;
+    this.setData();
+    this.update();
+  },
+
   addData: function (success) {
     this.data[2].tests--;
     if(success){
@@ -87,15 +96,18 @@ ProgressBubbles.prototype = {
     this.data = [{
       tests: 0,
       description: 'success',
-      color: 'green'
+      color: 'green',
+      order: 1
     },{
       tests: 0,
       description: 'failed',
-      color: 'red'
+      color: 'red',
+      order: 2
     },{
       tests: this.testCount,
       description: 'pending',
-      color: '#A89E16'
+      color: '#A89E16',
+      order: 3
     }]
     this.pieData = this.pie(this.data);
   },

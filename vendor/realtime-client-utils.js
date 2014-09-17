@@ -140,7 +140,7 @@ rtclient.Authorizer.prototype.authorize = function(onAuthComplete) {
     if (authResult && !authResult.error) {
       _this.fetchUserId(onAuthComplete);
     } else {
-      alert('You are not authorized, please authorize and return');
+      authorizeWithPopup();
     }
   };
 

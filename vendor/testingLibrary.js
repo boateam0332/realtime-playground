@@ -1,12 +1,16 @@
 FunctionalTesting = function (title) {
-	console.log('Initializing test suite');
-	this.$results = $(this.results);
-	this.$completed = this.$results.find('.completed');
-	this.$failed = this.$results.find('.failed');
-	this.$succeeded = this.$results.find('.succeeded');
-	this.$el = $(this.container).append(this.$results);
-	this.$el.find('h1').text(title);
+	this.testsCompleted = 0;
+	this.successfulTests = 0;
+	this.failedTests = 0;
+	this.$tests = $(this.testsContainer);
+	this.$el = $(this.container).append(this.$tests);
 	this.$header = this.$el.find('.header');
+	this.$header.find('.title').text(title);
+	this.$completed = this.$header.find('.completed');
+	this.$failed = this.$header.find('.failed');
+	this.$succeeded = this.$header.find('.succeeded');
+	this.progressBubbles = new ProgressBubbles(this.totalTests);
+	this.$header.find('.right').append(this.progressBubbles.el);
 	this.testClassCompleted = _.bind(this.testClassCompleted, this);
 
 	hljs.configure({
@@ -19,12 +23,19 @@ FunctionalTesting = function (title) {
 FunctionalTesting.prototype = {
 
 	container: 	'<div class="testing-container">' +
-					'<div class="header"><h1></h1></div>' +
+					'<div class="header">' +
+						'<div class="left">' +
+							'<div class="title"></div>' +
+							'<div class="loader"></div>' +
+							'<div class="totalResults">' +
+								'<span class="completed"></span><span class="failed"></span><span class="succeeded"></span>' +
+							'</div>' +
+						'</div>' +
+						'<div class="right"></div>' +
+					'</div>' +
 				'</div>',
 
-	results: 	'<div class="results">' +
-					'<span class="completed"></span><span class="failed"></span><span class="succeeded"></span>' +
-				'</div>',
+	testsContainer: 	'<div class="tests"></div>',
 
 	passedClassName: 'passed',
 
@@ -37,16 +48,15 @@ FunctionalTesting.prototype = {
 	load: function (testingClass) {
 		this.testingClasses.push(testingClass);
 		this.totalTests += testingClass.getTestCount();
-		this.$results.append(testingClass.$el);
+		this.$tests.append(testingClass.$el);
+		this.updateUI();
+		this.progressBubbles.updateTestCount(this.totalTests);
 	},
 
 	execute: function () {
-		this.progressBubbles = new ProgressBubbles(this.totalTests);
-		this.$header.append(this.progressBubbles.el);
 		this.index = -1;
-		this.testsCompleted = 0;
-		this.successfulTests = 0;
-		this.failedTests = 0;
+		$(this.progressBubbles.el).fadeIn();
+		this.$header.find('.loader').fadeOut();
 		this.next();
 	},
 
@@ -78,10 +88,11 @@ FunctionalTesting.prototype = {
 		this.$succeeded.text('Succeeded: ' + this.successfulTests);
 		if (this.failedTests) {
 			this.$el.addClass('failed');
+			$(document.head).find('title').text('FAILURE');
 		} else if (this.totalTests == this.successfulTests){
 			this.$el.addClass('success');
+			$(document.head).find('title').text('Success');
 		}
 	}
-
 }
 

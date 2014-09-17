@@ -12,10 +12,11 @@ code span {
 }
 
 .progress-bubbles {
+	display: none;
 	width: 150px;
 	height: 150px;
-	display: inline-block;
 	vertical-align: top;
+	margin-right: 30px;
 }
 
 .testing-container {
@@ -25,39 +26,69 @@ code span {
 	padding: 20px;
 	border-radius: 5px;
 	transition: all 1s;
+	-moz-transition:all 1s;
+	-webkit-transition: all 1s;
+	-ms-transition:all 1s;
 }
 
 .testing-container .header {
 	position: fixed;
 	background-color: white;
-	width: 980px;
+	width: 910px;
 	height: 150px;
 	z-index: 9999;
 	top: 0;
-	padding: 15px;
+	padding: 20px;
+	border-bottom: 1px solid #ccc;
 }
 
-.testing-container .header h1 {
+.testing-container .left {
+	width: 500px;
+}
+
+.testing-container .right {
+	float: right;
+}
+
+.testing-container .left, .testing-container .right {
 	display: inline-block;
 	vertical-align: top;
+}
+
+.testing-container .header .title {
+	display: inline-block;
+	font-size: 28px;
 	line-height: 100px;
-	margin: 0 165px 0 0;
+}
+
+.loader {
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	background-image: url('../images/ajax-loader.gif');
+	margin: 0px 0px -6px 15px;
 }
 
 .testing-container.success {
 	transition: all 1s;
+	-moz-transition:all 1s;
+	-webkit-transition: all 1s;
+	-ms-transition:all 1s;
 }
 
 .testing-container.failed h1 {
 	color: red;
 	transition: all 1s;
+	-moz-transition:all 1s;
+	-webkit-transition: all 1s;
+	-ms-transition:all 1s;
 }
 
 .testing-container.failed .test-class .test .result.failed {
 	color: darkred;
 }
 
-.testing-container .results {
+.testing-container .tests {
 	padding: 20px;
 	margin-top: 150px;
 }
@@ -90,6 +121,7 @@ code span {
 
 .test-class .tests {
 	padding: 20px;
+	margin: 0;
 }
 
 .test-class .test {
@@ -120,22 +152,31 @@ code span {
 .test-class .test .result.pending {
 	color: #A89E16;
 	transition: all 1s;
+	-moz-transition:all 1s;
+	-webkit-transition: all 1s;
+	-ms-transition:all 1s;
 }
 
 .test-class .test .result.passed {
 	color: green;
 	transition: all 1s;
+	-moz-transition:all 1s;
+	-webkit-transition: all 1s;
+	-ms-transition:all 1s;
 }
 
 .test-class .test .result.failed {
 	color: red;
 	transition: all 1s;
+	-moz-transition:all 1s;
+	-webkit-transition: all 1s;
+	-ms-transition:all 1s;
 }
 
 .test-class .stats {
 
 }
 
-.results span {
+span {
 	margin: 0px 20px;
 }

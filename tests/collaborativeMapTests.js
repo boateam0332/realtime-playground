@@ -76,8 +76,8 @@ window.testSuite.load(new TestingClass('Collaborative Map')
 					items[1] instanceof Array &&
 					items2[0] instanceof Array &&
 					items2[1] instanceof Array &&
-					items.toString() == 'key2,2,key1,1' &&
-					items2.toString() == 'key2,2,key1,1';
+					(items.toString() == 'key2,2,key1,1' || items.toString() == 'key1,1,key2,2') &&
+					(items2.toString() == 'key2,2,key1,1' || items2.toString() == 'key1,1,key2,2');
 		}
 	})
 	.test({
@@ -86,8 +86,10 @@ window.testSuite.load(new TestingClass('Collaborative Map')
 
 		},
 		assert: function () {
-			return testDocument1.map.keys().toString() == 'key2,key1' &&
-				testDocument2.map.keys().toString() == 'key2,key1';
+			var key1 = testDocument1.map.keys().toString();
+			var key2 = testDocument2.map.keys().toString();
+			return (key1 == 'key2,key1' || key1 == 'key1,key2') &&
+				(key2 == 'key2,key1' || key2 == 'key1,key2')
 		}
 	})
 	.test({
@@ -105,8 +107,10 @@ window.testSuite.load(new TestingClass('Collaborative Map')
 		run: function () {
 		},
 		assert: function () {
-			return testDocument1.map.values().toString() == '2,1' &&
-				testDocument2.map.values().toString() == '2,1';
+				values1 = testDocument1.map.values().toString();
+				values2 = testDocument2.map.values().toString()
+			return (values1 == '2,1' || values1 == '1,2') &&
+				(values2 == '2,1' || values2 == '1,2');
 		}
 	})
 	.test({
