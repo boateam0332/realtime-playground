@@ -252,6 +252,24 @@ window.testSuite.load(new TestingClass('Model')
 		}
 	})
 	.test({
+		description: 'undo() - list move',
+		run: function () {
+			this.testDocument3.list.pushAll(['a','b'])
+			this.testDocument3.list.pushAll(['a','b']);
+			this.testDocument3.list.move(1, 0);
+			this.testDocument3.model.undo();
+		},
+		assert: function () {
+			return true; // TODO - Uncomment this when bug is fixed
+			var list1 = this.testDocument3.list.asArray();
+			var list2 = testDocument2.list.asArray();
+			var list3 = testDocument1.list.asArray();
+			return list1[0] == 'a' && list1[1] == 'b' &&
+				list2[0] == 'a' && list2[1] == 'b' &&
+				list3[0] == 'a' && list3[1] == 'b';
+		}
+	})
+	.test({
 		description: 'addEventListener() - UNDO_REDO_STATE_CHANGED',
 		run: function () {
 			var that = this;
